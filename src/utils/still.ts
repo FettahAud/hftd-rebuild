@@ -1006,7 +1006,6 @@ export class Animations {
       this.init();
     });
     barba.init({
-      prefetchIgnore: ['/design/', '/sustainability/'],
       transitions: [
         {
           name: 'nav-transition',
