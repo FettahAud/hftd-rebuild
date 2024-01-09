@@ -1,7 +1,10 @@
 import { greetUser } from '$utils/greet';
+import { Animations } from '$utils/still';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
-  const name = 'John Doe';
-  greetUser(name);
+  alert('Hi Stephen');
+  const animations = new Animations();
+  animations.init();
+  animations.barbaInit();
 });
