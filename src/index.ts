@@ -1,4 +1,4 @@
-import { Animations } from '$utils/still';
+import Animations from './utils/all';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
