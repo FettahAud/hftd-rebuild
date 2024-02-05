@@ -5,25 +5,69 @@ class GTFO {
     this.init();
   }
 
+  cropImage(img: HTMLDivElement, trigger: HTMLDivElement) {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: trigger,
+        start: 'center center',
+        end: 'bottom center',
+        scrub: true,
+        markers: false,
+      },
+    });
+    tl.fromTo(
+      img,
+      { borderRadius: '0rem', margin: '0' },
+      { borderRadius: '3rem', margin: '8p 24px', duration: 1 }
+    );
+  }
+
   homeAnimations() {
     const heroBg = document.querySelector('.main-wrapper .hero .background-image-wrapper');
+    const overlapBanner = document.querySelector('.overlap-banner .overlap-banner_component');
+    const comingSectionBlocks = document.querySelectorAll(
+      '.image-content_component:last-child .image-content_image-wrapper'
+    );
+    const partnersSection = document.querySelector('.partners-banner');
+
     if (heroBg) {
       heroBg.style.overflow = 'hidden';
+      this.cropImage(heroBg, heroBg.parentElement);
+    }
+    if (null) {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: heroBg?.parentElement,
-          // start: 'top center',
+          trigger: overlapBanner,
           end: '+=100%',
           scrub: true,
           pin: true,
           markers: true,
         },
       });
-      tl.fromTo(
-        heroBg,
-        { borderRadius: '0rem', margin: '0' },
-        { borderRadius: '3rem', margin: '0.5rem 2rem', duration: 1 }
-      );
+      tl.to(comingSectionBlocks, {
+        top: '-100%',
+      });
+    }
+    if (partnersSection) {
+      const rows = partnersSection.querySelectorAll('.partners_row');
+
+      // Create an array to store the timelines
+      const timelines = Array.from(rows).map((row, i) => {
+        const tl = gsap.timeline({ paused: true });
+        tl.to(row, { x: `${i % 2 === 0 ? '-' : '+'}${200}` });
+        return tl;
+      });
+
+      ScrollTrigger.create({
+        trigger: partnersSection,
+        start: 'top center',
+        end: 'bottom center',
+        scrub: true,
+        markers: false,
+        onUpdate: (self) => {
+          timelines.forEach((tl) => tl.progress(self.progress));
+        },
+      });
     }
   }
 
