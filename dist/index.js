@@ -37,7 +37,7 @@
           start: "top center",
           end: "center center",
           scrub: true,
-          markers: true
+          markers: false
         }
       });
       tl.fromTo(
@@ -55,6 +55,19 @@
         }
       );
     }
+    stickSections(items, trigger) {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+          markers: false,
+          pin: true
+        }
+      });
+      tl.to(items, { yPercent: "-100" });
+    }
     homeAnimations() {
       const heroBg = document.querySelector(".main-wrapper .hero .background-image-wrapper");
       const overlapBanner = document.querySelector(".overlap-banner .overlap-banner_component");
@@ -65,6 +78,7 @@
       const testimonialSection = document.querySelector(".testimonial-banner .testimonial_component");
       const testimonials = document.querySelectorAll(".testimonial_list .testimonial");
       const ctaBanner = document.querySelector(".cta-banner");
+      const scrollSection = document.querySelector(".scroll-section");
       if (heroBg) {
         heroBg.style.overflow = "hidden";
         this.cropInImage(heroBg, heroBg.parentElement);
@@ -156,6 +170,10 @@
           ".background-image-wrapper.is-curved"
         );
         this.cropOutImage(imgWrapper, ctaBanner);
+      }
+      if (scrollSection) {
+        const comingSection = scrollSection.querySelector(".scroll-banner.is-alt");
+        this.stickSections([comingSection], scrollSection);
       }
     }
     checkPage() {

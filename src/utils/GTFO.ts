@@ -34,7 +34,7 @@ class GTFO {
         start: 'top center',
         end: 'center center',
         scrub: true,
-        markers: true,
+        markers: false,
       },
     });
 
@@ -53,6 +53,19 @@ class GTFO {
       }
     );
   }
+  stickSections(items: HTMLDivElement[], trigger: HTMLDivElement) {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: trigger,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        markers: false,
+        pin: true
+      },
+    });
+    tl.to(items, { yPercent: '-100' });
+  }
 
   homeAnimations() {
     const heroBg = document.querySelector('.main-wrapper .hero .background-image-wrapper');
@@ -64,6 +77,7 @@ class GTFO {
     const testimonialSection = document.querySelector('.testimonial-banner .testimonial_component');
     const testimonials = document.querySelectorAll('.testimonial_list .testimonial');
     const ctaBanner: HTMLDivElement = document.querySelector('.cta-banner')!;
+    const scrollSection: HTMLDivElement = document.querySelector('.scroll-section')!;
 
     if (heroBg) {
       heroBg.style.overflow = 'hidden';
@@ -163,6 +177,10 @@ class GTFO {
         '.background-image-wrapper.is-curved'
       )!;
       this.cropOutImage(imgWrapper, ctaBanner);
+    }
+    if (scrollSection) {
+      const comingSection: HTMLDivElement = scrollSection.querySelector('.scroll-banner.is-alt')!
+      this.stickSections([comingSection], scrollSection);
     }
   }
   checkPage() {
