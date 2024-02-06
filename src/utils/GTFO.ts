@@ -1,13 +1,13 @@
 gsap.registerPlugin(ScrollTrigger);
 
 class GTFO {
-    device: string;
+  device: string;
 
-    constructor() {
-      this.device = this.getDevice();
-      this.init();
-      this.setupResizeListener();
-    }
+  constructor() {
+    this.device = this.getDevice();
+    this.init();
+    this.setupResizeListener();
+  }
 
   cropInImage(img: HTMLDivElement, trigger: HTMLElement | null) {
     img.style.overflow = 'hidden';
@@ -61,25 +61,25 @@ class GTFO {
   partnersRowsAnimation(partnersEl: HTMLDivElement) {
     // TODO: Add a bit of velocity
     const rows = partnersEl.querySelectorAll('.partners_row');
-      const timelines = Array.from(rows).map((row, i) => {
-        const tl = gsap.timeline({ paused: true });
-        tl.to(row, { x: `${i % 2 === 0 ? '-' : '+'}200` });
-        return tl;
-      });
+    const timelines = Array.from(rows).map((row, i) => {
+      const tl = gsap.timeline({ paused: true });
+      tl.to(row, { x: `${i % 2 === 0 ? '-' : '+'}200` });
+      return tl;
+    });
 
-      ScrollTrigger.create({
-        trigger: partnersEl,
-        start: 'top center',
-        end: 'bottom center',
-        scrub: true,
-        markers: false,
-        onUpdate: (self) => {
-          timelines.forEach((tl) => tl.progress(self.progress));
-        },
-      });
+    ScrollTrigger.create({
+      trigger: partnersEl,
+      start: 'top center',
+      end: 'bottom center',
+      scrub: true,
+      markers: false,
+      onUpdate: (self) => {
+        timelines.forEach((tl) => tl.progress(self.progress));
+      },
+    });
   }
   testimonials(items: Element[], trigger: HTMLDivElement) {
-    if(this.device === 'mobile') return;
+    if (this.device === 'mobile') return;
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: trigger,
@@ -141,9 +141,9 @@ class GTFO {
         end: 'center center',
         scrub: true,
         markers: false,
-      }
-     })
-      tl.fromTo(img, {x: '100%'}, {x: '0%'})
+      },
+    });
+    tl.fromTo(img, { x: '100%' }, { x: '0%' });
   }
   logoSpin(logo: SVGElement, trigger: HTMLElement) {
     const tl = gsap.timeline({
@@ -152,21 +152,27 @@ class GTFO {
         start: 'top bottom',
         end: 'bottom top',
         scrub: true,
-        markers: false
-      }
+        markers: false,
+      },
     });
-    tl.to(logo, {rotate: 360})
+    tl.to(logo, { rotate: 360 });
   }
 
   homeAnimations() {
-    const heroBg: HTMLDivElement = document.querySelector('.main-wrapper .hero .background-image-wrapper')!;
+    const heroBg: HTMLDivElement = document.querySelector(
+      '.main-wrapper .hero .background-image-wrapper'
+    )!;
     const overlapBanner = document.querySelector('.overlap-banner .overlap-banner_component');
     const comingSectionBlocks = document.querySelectorAll(
       '.image-content_component:last-child .image-content_image-wrapper'
     );
     const partnersSection: HTMLDivElement = document.querySelector('.partners-banner')!;
-    const testimonialSection: HTMLDivElement = document.querySelector('.testimonial-banner .testimonial_component')!;
-    const testimonials: Element[] = [...document.querySelectorAll('.testimonial_list .testimonial')]!;
+    const testimonialSection: HTMLDivElement = document.querySelector(
+      '.testimonial-banner .testimonial_component'
+    )!;
+    const testimonials: Element[] = [
+      ...document.querySelectorAll('.testimonial_list .testimonial'),
+    ]!;
     const ctaBanner: HTMLDivElement = document.querySelector('.cta-banner')!;
 
     if (heroBg) {
@@ -188,7 +194,7 @@ class GTFO {
     }
     // TODO: Add a bit of velocity
     if (partnersSection) {
-      this.partnersRowsAnimation(partnersSection)
+      this.partnersRowsAnimation(partnersSection);
     }
     if (testimonials?.length > 0) {
       this.testimonials(testimonials, testimonialSection);
@@ -201,36 +207,43 @@ class GTFO {
     }
   }
   expertiseAnimation() {
-    const heroBg: HTMLDivElement = document.querySelector('.main-wrapper .hero .background-image-wrapper')!;
+    const heroBg: HTMLDivElement = document.querySelector(
+      '.main-wrapper .hero .background-image-wrapper'
+    )!;
     const imageBannerWrapper: HTMLDivElement = document.querySelector('.image-banner')!;
-    const imageBanner: NodeListOf<HTMLImageElement> = imageBannerWrapper?.querySelectorAll('.background-image')!;
+    const imageBanner: NodeListOf<HTMLImageElement> =
+      imageBannerWrapper?.querySelectorAll('.background-image')!;
     const logoWrapper: HTMLDivElement = document.querySelector('.text-banner')!;
     const logo: SVGElement = logoWrapper.querySelector('.svg-star')!;
-    const testimonialSection: HTMLDivElement = document.querySelector('.testimonial-banner .testimonial_component')!;
-    const testimonials: Element[] = [...document.querySelectorAll('.testimonial_list .testimonial')]!;
+    const testimonialSection: HTMLDivElement = document.querySelector(
+      '.testimonial-banner .testimonial_component'
+    )!;
+    const testimonials: Element[] = [
+      ...document.querySelectorAll('.testimonial_list .testimonial'),
+    ]!;
     const partnersSection: HTMLDivElement = document.querySelector('.partners-banner')!;
-    
-    if(heroBg) {
+
+    if (heroBg) {
       this.cropInImage(heroBg, heroBg.parentElement);
     }
-    if(imageBannerWrapper && imageBanner.length > 0) {
-     this.imageBannerAnimation(imageBanner[1], imageBannerWrapper);
+    if (imageBannerWrapper && imageBanner.length > 0) {
+      this.imageBannerAnimation(imageBanner[1], imageBannerWrapper);
     }
-    if(logo) {
+    if (logo) {
       logoWrapper.style.overflow = 'hidden';
       logoWrapper.querySelector('.text-banner_component')!.style.overflow = 'hidden';
-      this.logoSpin(logo, logoWrapper); 
+      this.logoSpin(logo, logoWrapper);
     }
-    if(testimonials?.length > 0) {
+    if (testimonials?.length > 0) {
       this.testimonials(testimonials, testimonialSection);
     }
-    if(partnersSection) {
+    if (partnersSection) {
       this.partnersRowsAnimation(partnersSection);
     }
   }
   checkPage() {
     const path = window.location.pathname;
-    
+
     if (path === '/' || path === '') {
       return 'home';
     }
@@ -243,13 +256,13 @@ class GTFO {
   }
 
   getDevice() {
-    if (window.matchMedia("(max-width: 767px)").matches) {
+    if (window.matchMedia('(max-width: 767px)').matches) {
       return 'mobile';
     } else {
       return 'desktop';
     }
   }
- 
+
   setupResizeListener() {
     window.addEventListener('resize', () => {
       const newDevice = this.getDevice();

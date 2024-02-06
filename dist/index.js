@@ -153,14 +153,20 @@
       tl.to(logo, { rotate: 360 });
     }
     homeAnimations() {
-      const heroBg = document.querySelector(".main-wrapper .hero .background-image-wrapper");
+      const heroBg = document.querySelector(
+        ".main-wrapper .hero .background-image-wrapper"
+      );
       const overlapBanner = document.querySelector(".overlap-banner .overlap-banner_component");
       const comingSectionBlocks = document.querySelectorAll(
         ".image-content_component:last-child .image-content_image-wrapper"
       );
       const partnersSection = document.querySelector(".partners-banner");
-      const testimonialSection = document.querySelector(".testimonial-banner .testimonial_component");
-      const testimonials = [...document.querySelectorAll(".testimonial_list .testimonial")];
+      const testimonialSection = document.querySelector(
+        ".testimonial-banner .testimonial_component"
+      );
+      const testimonials = [
+        ...document.querySelectorAll(".testimonial_list .testimonial")
+      ];
       const ctaBanner = document.querySelector(".cta-banner");
       if (heroBg) {
         this.cropInImage(heroBg, heroBg.parentElement);
@@ -193,13 +199,19 @@
       }
     }
     expertiseAnimation() {
-      const heroBg = document.querySelector(".main-wrapper .hero .background-image-wrapper");
+      const heroBg = document.querySelector(
+        ".main-wrapper .hero .background-image-wrapper"
+      );
       const imageBannerWrapper = document.querySelector(".image-banner");
       const imageBanner = imageBannerWrapper?.querySelectorAll(".background-image");
       const logoWrapper = document.querySelector(".text-banner");
       const logo = logoWrapper.querySelector(".svg-star");
-      const testimonialSection = document.querySelector(".testimonial-banner .testimonial_component");
-      const testimonials = [...document.querySelectorAll(".testimonial_list .testimonial")];
+      const testimonialSection = document.querySelector(
+        ".testimonial-banner .testimonial_component"
+      );
+      const testimonials = [
+        ...document.querySelectorAll(".testimonial_list .testimonial")
+      ];
       const partnersSection = document.querySelector(".partners-banner");
       if (heroBg) {
         this.cropInImage(heroBg, heroBg.parentElement);
