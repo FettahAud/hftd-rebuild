@@ -32,6 +32,8 @@
         ".image-content_component:last-child .image-content_image-wrapper"
       );
       const partnersSection = document.querySelector(".partners-banner");
+      const testimonialSection = document.querySelector(".testimonial-banner .testimonial_component");
+      const testimonials = document.querySelectorAll(".testimonial_list .testimonial");
       if (heroBg) {
         heroBg.style.overflow = "hidden";
         this.cropImage(heroBg, heroBg.parentElement);
@@ -54,7 +56,7 @@
         const rows = partnersSection.querySelectorAll(".partners_row");
         const timelines = Array.from(rows).map((row, i) => {
           const tl = gsap.timeline({ paused: true });
-          tl.to(row, { x: `${i % 2 === 0 ? "-" : "+"}${200}` });
+          tl.to(row, { x: `${i % 2 === 0 ? "-" : "+"}200` });
           return tl;
         });
         ScrollTrigger.create({
@@ -67,6 +69,56 @@
             timelines.forEach((tl) => tl.progress(self.progress));
           }
         });
+      }
+      if (testimonials?.length > 0) {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: testimonialSection,
+            start: "top center",
+            end: "30% center",
+            scrub: true,
+            markers: true
+          }
+        });
+        tl.set(testimonials[0], { zIndex: 1 });
+        tl.set(testimonials[2], { zIndex: 2 });
+        tl.add("start", 0).fromTo(
+          testimonials[0],
+          {
+            transform: "rotate(7.85deg)"
+          },
+          {
+            transform: "rotate(0deg)"
+          },
+          "start"
+        ).fromTo(
+          testimonials[1],
+          {
+            transform: "rotate(-7.12deg) translateX(-60px)"
+          },
+          {
+            transform: "rotate(0deg) translateX(0px)"
+          },
+          "start"
+        ).fromTo(
+          testimonials[2],
+          {
+            transform: "rotate(-13deg) translate(80px, -230px)"
+          },
+          {
+            transform: "rotate(0deg) translate(0px, 0px)"
+          },
+          "start"
+        ).fromTo(
+          testimonials[3],
+          {
+            transform: "rotate(7deg) translate(-110px, -220px)"
+          },
+          {
+            transform: "rotate(0deg) translate(0px, 0px)"
+          },
+          "start"
+        );
       }
     }
     checkPage() {
