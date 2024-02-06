@@ -7,9 +7,12 @@
   gsap.registerPlugin(ScrollTrigger);
   var GTFO = class {
     constructor() {
+      this.device = this.getDevice();
       this.init();
+      this.setupResizeListener();
     }
     cropInImage(img, trigger) {
+      img.style.overflow = "hidden";
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger,
@@ -55,18 +58,99 @@
         }
       );
     }
-    stickSections(items, trigger) {
+    partnersRowsAnimation(partnersEl) {
+      const rows = partnersEl.querySelectorAll(".partners_row");
+      const timelines = Array.from(rows).map((row, i) => {
+        const tl = gsap.timeline({ paused: true });
+        tl.to(row, { x: `${i % 2 === 0 ? "-" : "+"}200` });
+        return tl;
+      });
+      ScrollTrigger.create({
+        trigger: partnersEl,
+        start: "top center",
+        end: "bottom center",
+        scrub: true,
+        markers: false,
+        onUpdate: (self) => {
+          timelines.forEach((tl) => tl.progress(self.progress));
+        }
+      });
+    }
+    testimonials(items, trigger) {
+      if (this.device === "mobile")
+        return;
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger,
-          start: "top top",
-          end: "bottom bottom",
+          start: "top center",
+          end: "30% center",
           scrub: true,
-          markers: false,
-          pin: true
+          markers: false
         }
       });
-      tl.to(items, { yPercent: "-100" });
+      tl.set(items[0], { zIndex: 1 });
+      tl.set(items[2], { zIndex: 2 });
+      tl.add("start", 0).fromTo(
+        items[0],
+        {
+          transform: "rotate(7.85deg)"
+        },
+        {
+          transform: "rotate(0deg)"
+        },
+        "start"
+      ).fromTo(
+        items[1],
+        {
+          transform: "rotate(-7.12deg) translateX(-60px)"
+        },
+        {
+          transform: "rotate(0deg) translateX(0px)"
+        },
+        "start"
+      ).fromTo(
+        items[2],
+        {
+          transform: "rotate(-13deg) translate(80px, -230px)"
+        },
+        {
+          transform: "rotate(0deg) translate(0px, 0px)"
+        },
+        "start"
+      ).fromTo(
+        items[3],
+        {
+          transform: "rotate(7deg) translate(-110px, -220px)"
+        },
+        {
+          transform: "rotate(0deg) translate(0px, 0px)"
+        },
+        "start"
+      );
+    }
+    imageBannerAnimation(img, trigger) {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger,
+          start: "top center",
+          end: "center center",
+          scrub: true,
+          markers: false
+        }
+      });
+      tl.fromTo(img, { x: "100%" }, { x: "0%" });
+    }
+    logoSpin(logo, trigger) {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+          markers: false
+        }
+      });
+      tl.to(logo, { rotate: 360 });
     }
     homeAnimations() {
       const heroBg = document.querySelector(".main-wrapper .hero .background-image-wrapper");
@@ -76,11 +160,9 @@
       );
       const partnersSection = document.querySelector(".partners-banner");
       const testimonialSection = document.querySelector(".testimonial-banner .testimonial_component");
-      const testimonials = document.querySelectorAll(".testimonial_list .testimonial");
+      const testimonials = [...document.querySelectorAll(".testimonial_list .testimonial")];
       const ctaBanner = document.querySelector(".cta-banner");
-      const scrollSection = document.querySelector(".scroll-section");
       if (heroBg) {
-        heroBg.style.overflow = "hidden";
         this.cropInImage(heroBg, heroBg.parentElement);
       }
       if (null) {
@@ -98,72 +180,10 @@
         });
       }
       if (partnersSection) {
-        const rows = partnersSection.querySelectorAll(".partners_row");
-        const timelines = Array.from(rows).map((row, i) => {
-          const tl = gsap.timeline({ paused: true });
-          tl.to(row, { x: `${i % 2 === 0 ? "-" : "+"}200` });
-          return tl;
-        });
-        ScrollTrigger.create({
-          trigger: partnersSection,
-          start: "top center",
-          end: "bottom center",
-          scrub: true,
-          markers: false,
-          onUpdate: (self) => {
-            timelines.forEach((tl) => tl.progress(self.progress));
-          }
-        });
+        this.partnersRowsAnimation(partnersSection);
       }
       if (testimonials?.length > 0) {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: testimonialSection,
-            start: "top center",
-            end: "30% center",
-            scrub: true,
-            markers: false
-          }
-        });
-        tl.set(testimonials[0], { zIndex: 1 });
-        tl.set(testimonials[2], { zIndex: 2 });
-        tl.add("start", 0).fromTo(
-          testimonials[0],
-          {
-            transform: "rotate(7.85deg)"
-          },
-          {
-            transform: "rotate(0deg)"
-          },
-          "start"
-        ).fromTo(
-          testimonials[1],
-          {
-            transform: "rotate(-7.12deg) translateX(-60px)"
-          },
-          {
-            transform: "rotate(0deg) translateX(0px)"
-          },
-          "start"
-        ).fromTo(
-          testimonials[2],
-          {
-            transform: "rotate(-13deg) translate(80px, -230px)"
-          },
-          {
-            transform: "rotate(0deg) translate(0px, 0px)"
-          },
-          "start"
-        ).fromTo(
-          testimonials[3],
-          {
-            transform: "rotate(7deg) translate(-110px, -220px)"
-          },
-          {
-            transform: "rotate(0deg) translate(0px, 0px)"
-          },
-          "start"
-        );
+        this.testimonials(testimonials, testimonialSection);
       }
       if (ctaBanner) {
         const imgWrapper = ctaBanner.querySelector(
@@ -171,30 +191,65 @@
         );
         this.cropOutImage(imgWrapper, ctaBanner);
       }
-      if (scrollSection) {
-        const comingSection = scrollSection.querySelector(".scroll-banner.is-alt");
-        this.stickSections([comingSection], scrollSection);
+    }
+    expertiseAnimation() {
+      const heroBg = document.querySelector(".main-wrapper .hero .background-image-wrapper");
+      const imageBannerWrapper = document.querySelector(".image-banner");
+      const imageBanner = imageBannerWrapper?.querySelectorAll(".background-image");
+      const logoWrapper = document.querySelector(".text-banner");
+      const logo = logoWrapper.querySelector(".svg-star");
+      const testimonialSection = document.querySelector(".testimonial-banner .testimonial_component");
+      const testimonials = [...document.querySelectorAll(".testimonial_list .testimonial")];
+      const partnersSection = document.querySelector(".partners-banner");
+      if (heroBg) {
+        this.cropInImage(heroBg, heroBg.parentElement);
+      }
+      if (imageBannerWrapper && imageBanner.length > 0) {
+        this.imageBannerAnimation(imageBanner[1], imageBannerWrapper);
+      }
+      if (logo) {
+        logoWrapper.style.overflow = "hidden";
+        logoWrapper.querySelector(".text-banner_component").style.overflow = "hidden";
+        this.logoSpin(logo, logoWrapper);
+      }
+      if (testimonials?.length > 0) {
+        this.testimonials(testimonials, testimonialSection);
+      }
+      if (partnersSection) {
+        this.partnersRowsAnimation(partnersSection);
       }
     }
     checkPage() {
       const path = window.location.pathname;
-      const page = path.split("/").pop();
-      if (page === "index.html" || page === "") {
+      if (path === "/" || path === "") {
         return "home";
       }
-      if (page === "about.html") {
-        return "about";
+      if (path.includes("expertise")) {
+        return "expertise";
       }
-      if (page === "contact.html") {
-        return "contact";
+    }
+    getDevice() {
+      if (window.matchMedia("(max-width: 767px)").matches) {
+        return "mobile";
+      } else {
+        return "desktop";
       }
+    }
+    setupResizeListener() {
+      window.addEventListener("resize", () => {
+        const newDevice = this.getDevice();
+        if (newDevice !== this.device) {
+          this.device = newDevice;
+          this.init();
+        }
+      });
     }
     init() {
       const page = this.checkPage();
       if (page === "home") {
         this.homeAnimations();
-      } else if (page === "about") {
-      } else if (page === "contact") {
+      } else if (page === "expertise") {
+        this.expertiseAnimation();
       }
     }
   };
