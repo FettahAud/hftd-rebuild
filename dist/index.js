@@ -9,7 +9,7 @@
     constructor() {
       this.init();
     }
-    cropImage(img, trigger) {
+    cropInImage(img, trigger) {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger,
@@ -25,6 +25,36 @@
         { borderRadius: "3rem", margin: "8p 24px", duration: 1 }
       );
     }
+    cropOutImage(img, trigger) {
+      const style = {
+        radius: parseInt(img?.computedStyleMap().get("border-radius")?.toString()),
+        left: parseInt(img?.computedStyleMap().get("left")?.toString()),
+        right: parseInt(img?.computedStyleMap().get("right")?.toString())
+      };
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger,
+          start: "top center",
+          end: "center center",
+          scrub: true,
+          markers: true
+        }
+      });
+      tl.fromTo(
+        img,
+        {
+          borderRadius: style.radius,
+          left: style.left,
+          right: style.right
+        },
+        {
+          borderRadius: 0,
+          left: 0,
+          right: 0,
+          duration: 1
+        }
+      );
+    }
     homeAnimations() {
       const heroBg = document.querySelector(".main-wrapper .hero .background-image-wrapper");
       const overlapBanner = document.querySelector(".overlap-banner .overlap-banner_component");
@@ -34,9 +64,10 @@
       const partnersSection = document.querySelector(".partners-banner");
       const testimonialSection = document.querySelector(".testimonial-banner .testimonial_component");
       const testimonials = document.querySelectorAll(".testimonial_list .testimonial");
+      const ctaBanner = document.querySelector(".cta-banner");
       if (heroBg) {
         heroBg.style.overflow = "hidden";
-        this.cropImage(heroBg, heroBg.parentElement);
+        this.cropInImage(heroBg, heroBg.parentElement);
       }
       if (null) {
         const tl = gsap.timeline({
@@ -77,7 +108,7 @@
             start: "top center",
             end: "30% center",
             scrub: true,
-            markers: true
+            markers: false
           }
         });
         tl.set(testimonials[0], { zIndex: 1 });
@@ -119,6 +150,12 @@
           },
           "start"
         );
+      }
+      if (ctaBanner) {
+        const imgWrapper = ctaBanner.querySelector(
+          ".background-image-wrapper.is-curved"
+        );
+        this.cropOutImage(imgWrapper, ctaBanner);
       }
     }
     checkPage() {

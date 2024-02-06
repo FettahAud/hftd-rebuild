@@ -5,7 +5,7 @@ class GTFO {
     this.init();
   }
 
-  cropImage(img: HTMLDivElement, trigger: HTMLDivElement) {
+  cropInImage(img: HTMLDivElement, trigger: HTMLDivElement) {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: trigger,
@@ -21,6 +21,38 @@ class GTFO {
       { borderRadius: '3rem', margin: '8p 24px', duration: 1 }
     );
   }
+  cropOutImage(img: HTMLDivElement, trigger: HTMLDivElement) {
+    const style = {
+      radius: parseInt(img?.computedStyleMap().get('border-radius')?.toString()),
+      left: parseInt(img?.computedStyleMap().get('left')?.toString()),
+      right: parseInt(img?.computedStyleMap().get('right')?.toString()),
+    };
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: trigger,
+        start: 'top center',
+        end: 'center center',
+        scrub: true,
+        markers: true,
+      },
+    });
+
+    tl.fromTo(
+      img,
+      {
+        borderRadius: style.radius,
+        left: style.left,
+        right: style.right,
+      },
+      {
+        borderRadius: 0,
+        left: 0,
+        right: 0,
+        duration: 1,
+      }
+    );
+  }
 
   homeAnimations() {
     const heroBg = document.querySelector('.main-wrapper .hero .background-image-wrapper');
@@ -31,10 +63,11 @@ class GTFO {
     const partnersSection = document.querySelector('.partners-banner');
     const testimonialSection = document.querySelector('.testimonial-banner .testimonial_component');
     const testimonials = document.querySelectorAll('.testimonial_list .testimonial');
+    const ctaBanner: HTMLDivElement = document.querySelector('.cta-banner')!;
 
     if (heroBg) {
       heroBg.style.overflow = 'hidden';
-      this.cropImage(heroBg, heroBg.parentElement);
+      this.cropInImage(heroBg, heroBg.parentElement);
     }
     if (null) {
       const tl = gsap.timeline({
@@ -78,7 +111,7 @@ class GTFO {
           start: 'top center',
           end: '30% center',
           scrub: true,
-          markers: true,
+          markers: false,
         },
       });
       tl.set(testimonials[0], { zIndex: 1 });
@@ -124,6 +157,12 @@ class GTFO {
           },
           'start'
         );
+    }
+    if (ctaBanner) {
+      const imgWrapper: HTMLDivElement = ctaBanner.querySelector(
+        '.background-image-wrapper.is-curved'
+      )!;
+      this.cropOutImage(imgWrapper, ctaBanner);
     }
   }
   checkPage() {
