@@ -198,7 +198,7 @@
         this.cropOutImage(imgWrapper, ctaBanner);
       }
     }
-    expertiseAnimation() {
+    expertiseAnimations() {
       const heroBg = document.querySelector(
         ".main-wrapper .hero .background-image-wrapper"
       );
@@ -231,6 +231,60 @@
         this.partnersRowsAnimation(partnersSection);
       }
     }
+    blogAnimations() {
+      const listWrapper = document.querySelector(".article_list");
+      const listItems = document.querySelectorAll(".article_list .article_link");
+      if (listWrapper && this.device === "desktop") {
+        console.log("test");
+        const imgWrapper = document.createElement("div");
+        imgWrapper.classList.add("img-wrapper");
+        const img = document.createElement("img");
+        img.src = listItems[0].querySelector("img")?.src;
+        imgWrapper.appendChild(img);
+        listWrapper.appendChild(imgWrapper);
+        imgWrapper.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 288px;
+        height: 395px;
+        opacity: 0;
+        pointer-events: none;
+        user-select: none;
+        z-index: 100;
+        border-radius: 15px;
+        overflow: hidden;
+      `;
+        img.style.cssText = `
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      `;
+        listWrapper.addEventListener("mousemove", (e) => {
+          gsap.to(imgWrapper, {
+            opacity: 1,
+            left: `${e.clientX - 144}px`,
+            top: e.clientY,
+            duration: 0.3
+          });
+        });
+        listWrapper.addEventListener("mouseleave", () => {
+          gsap.to(imgWrapper, { opacity: 0, duration: 0.3 });
+        });
+        listItems.forEach((item) => {
+          item.addEventListener("mouseenter", () => {
+            img.src = item.querySelector("img")?.src;
+            gsap.to(imgWrapper, {
+              opacity: 1,
+              duration: 0.3
+            });
+          });
+          item.addEventListener("mouseleave", () => {
+            gsap.to(imgWrapper, { opacity: 0, duration: 0.3 });
+          });
+        });
+      }
+    }
     checkPage() {
       const path = window.location.pathname;
       if (path === "/" || path === "") {
@@ -239,13 +293,15 @@
       if (path.includes("expertise")) {
         return "expertise";
       }
+      if (path.includes("blog")) {
+        return "blog";
+      }
     }
     getDevice() {
       if (window.matchMedia("(max-width: 767px)").matches) {
         return "mobile";
-      } else {
-        return "desktop";
       }
+      return "desktop";
     }
     setupResizeListener() {
       window.addEventListener("resize", () => {
@@ -261,7 +317,9 @@
       if (page === "home") {
         this.homeAnimations();
       } else if (page === "expertise") {
-        this.expertiseAnimation();
+        this.expertiseAnimations();
+      } else if (page === "blog") {
+        this.blogAnimations();
       }
     }
   };
