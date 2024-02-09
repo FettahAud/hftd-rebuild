@@ -1,5 +1,4 @@
-import barbaRouter from '@barba/router';
-gsap.registerPlugin(ScrollTrigger, Observer, Flip);
+gsap.registerPlugin(ScrollTrigger, Observer);
 
 const lenis = new Lenis();
 
@@ -334,11 +333,15 @@ class NavAnimations {
 
       if (this.device === 'desktop') {
         this.hideMenuAnimation(item).then(() => {
-          barba.go(`${language}/${item.dataset.href}`, { trigger: 'nav-animation' });
+          barba.go(`${language}/${item.dataset.href}`, {
+            trigger: 'nav-animation',
+          });
         });
       } else {
         // we may need to add animation here
-        barba.go(`${language}/${item.dataset.href}`, { trigger: 'nav-animation' });
+        barba.go(`${language}/${item.dataset.href}`, {
+          trigger: 'nav-animation',
+        });
       }
     };
     this.navLinks.forEach((item) => {
@@ -470,17 +473,19 @@ class Slideshow {
     this.DOM.slidesInner = this.DOM.slides.map((item) => item.querySelector('.js_slide_img'));
 
     // Set initial slide as current
-    this.DOM.slides[this.current].classList.add('js_slider_slide--current');
-    this.DOM.footerList = DOM_el.querySelector('.slider_footer-list');
+    if (this.DOM.slides.length > 0) {
+      this.DOM.slides[this.current].classList.add('js_slider_slide--current');
+      this.DOM.footerList = DOM_el.querySelector('.slider_footer-list');
 
-    // Count total slides
-    this.slidesTotal = this.DOM.slides.length;
-    this.device = window.innerWidth > 767 ? 'desktop' : 'mobile';
-    if (this.DOM.footerList) {
-      this.createDots();
+      // Count total slides
+      this.slidesTotal = this.DOM.slides.length;
+      this.device = window.innerWidth > 767 ? 'desktop' : 'mobile';
+      if (this.DOM.footerList) {
+        this.createDots();
+      }
+      this.enableSlider();
+      this.resize();
     }
-    this.enableSlider();
-    this.resize();
   }
 
   createDots() {
@@ -1173,12 +1178,15 @@ class Animations {
         const standardSlider = slider.querySelector('.swiper.standard');
         const parallaxSlider = slider.querySelector('.swiper.parallax');
 
+        const spaceBetween = window.innerWidth < 767 ? 16 : 32;
+
         if (standardSlider) {
           const swiper = new Swiper(standardSlider, {
             speed: 1000,
             loop: true,
-            delay: 3000,
-            autoplay: true,
+            autoplay: {
+              delay: 3000,
+            },
             pagination: {
               el: '.swiper-pagination',
               type: 'bullets',
@@ -1195,7 +1203,7 @@ class Animations {
             initialSlide: 3,
             slidesPerView: 1.15,
             centeredSlides: true,
-            spaceBetween: 32,
+            spaceBetween: spaceBetween,
             freeMode: {
               enabled: true,
               sticky: true,
@@ -1204,6 +1212,26 @@ class Animations {
         }
       });
     }
+  }
+
+  cookies() {
+    const scriptEle = document.createElement('script');
+    scriptEle.className = 'fs-cc-script';
+    document.querySelectorAll('.fs-cc-script').forEach((el) => el.remove());
+    scriptEle.setAttribute(
+      'src',
+      'https://cdn.jsdelivr.net/npm/@finsweet/cookie-consent@1/fs-cc.js'
+    );
+    scriptEle.setAttribute('type', 'text/javascript');
+    scriptEle.setAttribute('fs-cc-mode', 'opt-in');
+    scriptEle.setAttribute('async', '');
+
+    document.body.appendChild(scriptEle);
+
+    // error event
+    scriptEle.addEventListener('error', (ev) => {
+      console.log('Error on loading file', ev);
+    });
   }
 
   stephenCustomCode() {
@@ -1374,7 +1402,7 @@ class Animations {
       const text = item.nextElementSibling;
       text.classList.toggle('is-active');
     }
-
+    this.cookies();
     this.mobileSliderAnimations();
     this.desktopSliderAnimations();
   }
@@ -1412,69 +1440,52 @@ class Animations {
 
     const tl = gsap.timeline();
 
-    let maxWidth = gridComponent.querySelector('.scale-grid_item').clientWidth,
-      scale,
-      width = window.innerWidth;
-
-    // const img = document.querySelector('.scale-grid_item-middle img');
-    // const state = Flip.getState(img);
-    // wrapper.appendChild(img);
-    // img.style.height = '100%';
-    // const flipTl = Flip.from(state);
-
-    scale = width / maxWidth;
+    // outer.style.transform = isMax?'':'scale(' + scale + ')';
     tl.add('start')
-      .to(
-        gridComponent,
-        {
-          transform: `scale(${scale})`,
-        },
-        'start'
-      )
-      .to(
-        '.scale-grid_item img',
-        {
-          scale: 1,
-          yPercent: '-50',
-        },
-        'start'
-      )
       .to(
         '.scale-grid_item:not(.scale-grid_item-middle)',
         {
-          opacity: 0.3,
+          opacity: 0,
+          yPercent: 50,
+        },
+        'start'
+      )
+      .to(
+        '.scale-grid_item.scale-grid_item-middle',
+        {
+          width: '100%',
+          height: '100%',
         },
         'start'
       )
       .to(
         '.scale-grid_item._1',
         {
-          x: -50,
+          xPercent: -50,
         },
         'start'
       )
       .to(
         '.scale-grid_item._3',
         {
-          x: 50,
+          xPercent: 90,
         },
         'start'
       )
       .to(
         '.scale-grid_item._4',
         {
-          opacity: 0,
+          yPercent: 90,
         },
         'start'
       );
-    // .add(flipTl, 'start');
 
     ScrollTrigger.create({
       trigger: wrapper,
-      markers: true,
-      pin: true,
-      start: 'center 70%',
-      end: '+=1000',
+      markers: false,
+      start: 'center center',
+      // pin: true,
+      // end: "bottom bottom",
       scrub: true,
       animation: tl,
     });

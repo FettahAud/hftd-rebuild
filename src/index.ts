@@ -1,5 +1,8 @@
-import GTFO from '$utils/GTFO';
+import Animations from '$utils/all';
+
 window.Webflow ||= [];
 window.Webflow.push(() => {
-  new GTFO();
+  const still = new Animations();
+  still.init();
+  still.barbaInit();
 });
