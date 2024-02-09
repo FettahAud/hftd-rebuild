@@ -1,5 +1,7 @@
-import GTFO from '$utils/GTFO';
+import init from '$utils/newFile';
+
 window.Webflow ||= [];
 window.Webflow.push(() => {
-  new GTFO();
+  init();
+  console.log('Hello man');
 });
