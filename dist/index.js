@@ -235,7 +235,6 @@
       const listWrapper = document.querySelector(".article_list");
       const listItems = document.querySelectorAll(".article_list .article_link");
       if (listWrapper && this.device === "desktop") {
-        console.log("test");
         const imgWrapper = document.createElement("div");
         imgWrapper.classList.add("img-wrapper");
         const img = document.createElement("img");
@@ -255,7 +254,7 @@
         border-radius: 15px;
         overflow: hidden;
       `;
-        img.style.cssText = `
+        img.style.cssText = `[]
         width: 100%;
         height: 100%;
         object-fit: cover;
