@@ -1020,6 +1020,10 @@ class Animations {
       Webflow.ready();
       ScrollTrigger.getAll().forEach((t) => t.kill());
       ScrollTrigger.refresh();
+      // get path name
+      const path = window.location.pathname;
+      const parts = path.split('/');
+      console.log(parts);
       this.init();
     });
     barba.init({
@@ -1402,7 +1406,6 @@ class Animations {
       const text = item.nextElementSibling;
       text.classList.toggle('is-active');
     }
-    this.cookies();
     this.mobileSliderAnimations();
     this.desktopSliderAnimations();
   }
